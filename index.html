@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>For my girl &lt;3</title>
+
+        <style>
+            /* ===== Global styles ===== */
+            body {
+                margin: 0;
+                min-height: 100vh;
+                display: grid;
+                place-items: center;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                background: radial-gradient(circle at top, #ffd6e5, #fff);
+            }
+
+            .card {
+                background: white;
+                padding: 30px 24px;
+                border-radius: 20px;
+                width: min(420px, 92vw);
+                box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+                text-align: center;
+            }
+
+            h1 {
+                margin-bottom: 10px;
+            }
+
+            p {
+                opacity: 0.8;
+            }
+
+            .screen {
+                display: none;
+            }
+
+            .screen.active {
+                display: block;
+            }
+
+            .answers {
+                display: grid;
+                gap: 12px;
+                margin-top: 16px;
+            }
+
+            .fade-in {
+                opacity: 0;
+                animation: fadeIn 0.6s forwards;
+            }   
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(6px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0)
+                }
+            }
+
+            .letter.show {
+                animation: letterReveal 0.6s ease forwards;
+            }
+
+            @keyframes letterReveal {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .envelope {
+                position: relative;
+                width: 100%;
+                max-width: 420px;
+                padding: 26px;
+                background: #ffe4ed;
+                border-radius: 28px;
+                overflow: hidden;
+                box-shadow: 0 25px 55px rgba(0,0,0,0.18);
+            }
+
+            .envelope .flap {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 140px;
+                background: linear-gradient(135deg, #ff9ab8, #ff5c8a);
+                clip-path: polygon(0 0, 100% 0, 50% 100%);
+            }
+
+            .envelope .letter {
+                position: relative;
+                z-index: 2;
+                margin-top: 70px;
+                padding: 34px 28px 26px;
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+
+                opacity: 0;
+                transform: translateY(20px);
+                pointer-events: none;
+            }
+
+            button {
+                padding: 12px 16px;
+                border-radius: 999px;
+                border: none;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            button.primary {
+                background: #ff3b7a;
+                color: white;
+            }
+
+            button.secondary {
+                background: #222;
+                color: white;
+            }
+
+            #message {
+                margin-top: 16px;
+                font-weight: 600;
+                color: #ff3b7a;
+            }
+
+            #mainCard.hidden {
+                display: none;
+            }
+
+            .envelope.hide {
+                background: transparent;
+                box-shadow: none;
+            }
+
+            .envelope.hide .flap,
+            .envelope.hide::before,
+            .envelope.hide::after {
+                animation: envelopeFadeOut 0.6s forwards;
+            }
+
+            .envelope.hide .flap {
+                pointer-events: none;
+            }
+
+            .envelope.hide .letter {
+                margin-top: 0;
+            }
+
+            @keyframes envelopeFadeOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="welcome" class="screen active fade-in">
+            <div id="envelope" class="envelope fade-in">
+                <div class="flap"> </div>
+
+                <div class="letter"> 
+                    <h1 class="fade-in">Hi baby</h1>
+                    <p id="typingText">
+                        I made something special for you today.
+                    </p>
+                    <p class="fade-in" style="animation-delay: 1.8s;">
+                        When you're ready, click below to begin.
+                    </p>
+                    <button class="primary fade-in" style="animation-delay:2.6s;" onclick="goToSecurity()">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mainCard" class="card hidden">
+            <div id="intro" class="screen">
+                <h1>Security Check</h1>
+                <p>Before we continue, we must confirm you are <em>my girl</em>.</p>
+                <button class="primary" onclick="startQuiz()">Begin</button>
+            </div>
+
+            <div id="quiz" class="screen">
+                <h1 id="question"></h1>
+                <div id="answers" class="answers"></div>
+                <p id="progress"></p>
+            </div>
+
+            <div id="fail" class="screen">
+                <h1>Access Denied</h1>
+                <p>Nice try... but my person would know that.</p>
+                <button class="secondary" onclick="startQuiz()">Try Again</button>
+            </div>
+
+            <div id="valentine" class="screen">
+                <div id="verifiedStage">
+                    <h2>Access Granted</h2>
+                    <p>Welcome my love!</p>
+                </div>
+
+                <div id="questionStage" style="display:none">
+                    <div id="loveQuestion">
+                        <h1>One last question...</h1>
+                        <p><strong>Do you love me?</strong></p>
+                    
+                        <div class="answers">
+                            <button onclick="answerLove()">I love you</button>
+                            <button onclick="answerLove()">I LOVEEEE YOUUUU</button>
+                        </div>
+                    </div>
+                    
+                    <div id="valentineQuestion" style="display:none;">
+                        <p><strong>Will you be my Valentine?</strong></p>
+
+                        <div class="answers">
+                            <button onclick="finalYes()">Yes!</button>
+                            <button onclick="finalYes()">Yes x100</button>
+                        </div>
+
+                        <div id="message"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function goToSecurity() {
+                document.getElementById("mainCard").classList.remove("hidden");
+                showScreen("intro");
+            }
+
+            const screens = document.querySelectorAll(".screen");
+
+            function showScreen(id) {
+                screens.forEach(screen => screen.classList.remove("active"));
+                document.getElementById(id).classList.add("active");
+            }
+
+            const questions = [
+                {
+                    question: "What's our song?",
+                    answers: ["And I Love Her - The Beatles", "I Won't Share You - The Smiths", "Wish You Were Here - Pink Floyd", "First Love/Late Spring - Mitski"],
+                    correct: 2
+                },
+                {
+                    question: "What's my favorite ice cream flavor?",
+                    answers: ["Vanilla", "Pistachio", "Strawberry", "Rocky Road"],
+                    correct: 3
+                },
+                {
+                    question: "When did we first meet?",
+                    answers: ["2021", "2022", "2023", "2024"],
+                    correct: 2
+                }
+            ];
+            
+            let currentQuestion = 0;
+
+            const questionEl = document.getElementById("question");
+            const answersEl = document.getElementById("answers");
+            const progressEl = document.getElementById("progress");
+            const loveQuestionEl = document.getElementById("loveQuestion");
+            const valentineQuestionEl = document.getElementById("valentineQuestion");
+
+            const verifiedStage = document.getElementById("verifiedStage");
+            const questionStage = document.getElementById("questionStage");
+            let revealTimer = null;
+
+            const typingText = document.getElementById("typingText");
+
+            function startQuiz() {
+                currentQuestion = 0;
+                showScreen("quiz");
+                loadQuestion();
+            }
+
+            function startTyping() {
+                const text = "I made something special for you today...";
+                let index = 0;
+                typingText.textContent = "";
+
+                const typingInterval = setInterval(() => {
+                    typingText.textContent += text[index];
+                    index++;
+
+                    if (index >= text.length) {
+                        clearInterval(typingInterval);
+                    }
+                }, 50);
+            }
+
+            setTimeout(() => {
+                document.getElementById("envelope").classList.add("hide");
+            }, 3000);
+            setTimeout(() => {
+                document.querySelector(".letter").classList.add("show");
+                startTyping();
+            }, 3600);
+            function loadQuestion() {
+                const q = questions[currentQuestion];
+
+                questionEl.textContent = q.question;
+                progressEl.textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+                answersEl.innerHTML = "";
+
+                q.answers.forEach((text, index) => {
+                    const btn = document.createElement("button");
+                    btn.textContent = text;
+                    btn.onclick = () => checkAnswer(index);
+                    answersEl.appendChild(btn);
+                });
+            }
+
+            function answerLove() {
+                loveQuestionEl.style.display = "none";
+                valentineQuestionEl.style.display = "block";
+            }
+
+            function startValentineReveal() {
+                verifiedStage.style.display = "block";
+                questionStage.style.display = "none";
+
+                if (revealTimer) clearTimeout(revealTimer);
+
+                revealTimer = setTimeout(() => {
+                    verifiedStage.style.display = "none";
+                    questionStage.style.display = "block";
+                }, 2000);
+            }
+
+            function checkAnswer(selected) {
+                if (selected === questions[currentQuestion].correct) {
+                    currentQuestion++;
+
+                    if (currentQuestion < questions.length) {
+                        loadQuestion();
+                    } else {
+                        showScreen("valentine");
+                        startValentineReveal();
+                    }
+                } else {
+                    showScreen("fail");
+                }
+            }
+
+            function finalYes() {
+                document.getElementById("message").textContent = "I love you my Valentine! <3";
+            }
+
+        </script>
+
+    </body>
+</html>
