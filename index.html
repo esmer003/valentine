@@ -116,7 +116,6 @@
                 animation: letterReveal 0.6s ease forwards;
             }
 
-
             button {
                 padding: 12px 16px;
                 border-radius: 999px;
@@ -136,10 +135,43 @@
             }
 
             #message {
-                margin-top: 16px;
-                font-weight: 600;
+                margin-top: 20px;
+                font-weight: 700;
+                font-size: 28px;
                 color: #ff3b7a;
+                animation: popIn 0.6s ease forwards;
             }
+            @keyframes popIn {
+                0% {
+                    transform: scale(0.6);
+                    opacity: 0;
+                }
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .confetti {
+                position: fixed;
+                top: -10px;
+                width: 10px;
+                height: 14px;
+                background-color: red;
+                opacity: 0.9;
+                animation: fall 3s linear forwards;
+                z-index: 9999;
+            }
+
+            @keyframes fall {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+                100% {
+                    transform: translateY(110vh) rotate(360deg);
+                }
+            }
+
 
             #mainCard.hidden {
                 display: none;
@@ -365,8 +397,32 @@
                 }
             }
 
+            function launchConfetti() {
+                const colors = ["#ff3b7a", "#ff9ab8", "#ffd6e5", "#ffc107"];
+
+                for (let i = 0; i < 80; i++) {
+                    const confetti = document.createElement("div");
+                    confetti.classList.add("confetti");
+
+                    confetti.style.left = Math.random() * 100 + "vw";
+                    confetti.style.backgroundColor =
+                    colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = 2 + Math.random() * 2 + "s";
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => {
+                    confetti.remove();
+                    }, 4000);
+                }
+            }
+
+
             function finalYes() {
-                document.getElementById("message").textContent = "I love you my Valentine! <3";
+                const message = document.getElementById("message");
+                message.textContent = "I love you my Valentine! <3";
+                launchConfetti();
             }
 
         </script>
